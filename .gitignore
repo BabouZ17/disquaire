@@ -4,3 +4,6 @@ lib/
 lib64
 pyvenv.cfg
 share/
+
+# Django files to ignore
+disquaire_project/disquaire_project/settings.py
