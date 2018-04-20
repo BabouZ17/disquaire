@@ -7,3 +7,5 @@ share/
 
 # Django files to ignore
 disquaire_project/disquaire_project/settings.py
+disquaire_project/disquaire_project/__init__.py
+disquaire_project/disquaire_project/__pycache__/
