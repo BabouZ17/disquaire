@@ -1,0 +1,9 @@
+<html>
+{% if items.exists %}
+  {% for item in items %}
+    <p>{{ item }}</p>
+  {% endfor %}
+{% else %}
+  <p>{{ items }}</p>
+{% endif %}
+</html>

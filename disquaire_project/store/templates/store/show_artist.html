@@ -1,0 +1,13 @@
+{% extends 'store/base.html' %}
+{% block center_content %}
+  <h1 class="brand-name">{{ artist.name }}.</h1>
+  <ul>
+    <div class="card" style="width: 200rem;">
+      <img class="card-img-top" src={{ artist.picture }} alt="Card image cap">
+      <div class="card-body">
+        <h5 class="card-title">{{ artist.name }}.</h5>
+        <p class="card-text">{{ artist.bio }}</p>
+      </div>
+    </div>
+  </ul>
+{% endblock %}

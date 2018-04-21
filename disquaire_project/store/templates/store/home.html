@@ -1,0 +1,16 @@
+{% extends 'store/base.html' %}
+{% block carousel_content %}
+{% include 'store/carousel.html' %}
+{% endblock %}
+{% block center_content %}
+  {% for artist in data.artists.all %}
+    <h4>{{ artist.name }}</h4>
+    <p>Albums :</p>
+      <ul>
+        {% for album in artist.albums.all %}
+          <li><p>{{ album.title }}</p></li>
+        {% endfor %}
+        <hr />
+      </ul>
+  {% endfor %}
+{% endblock %}
