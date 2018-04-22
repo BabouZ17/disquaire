@@ -23,7 +23,7 @@ from store import views
 urlpatterns = [
     path('', views.index),
     path('store/', include('store.urls', namespace='store')),
-    path('admin/', admin.site.urls),
+    path('administration/', admin.site.urls),
 ]
 
 if settings.DEBUG:

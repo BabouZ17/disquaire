@@ -72,7 +72,11 @@ def show_albums(request):
 def post_booking(request, album_id):
     if request.method == 'POST':
         form = BookingForm(request.POST)
-        album = Album.objects.get(pk=album_id)
+        try:
+            album = Album.objects.get(pk=album_id)
+        except Album.DoesNotExist:
+            messages.error(request, 'Album does not exists!')
+            return HttpResponseRedirect(reverse('store:show_albums'))
         if form.is_valid() and album.available:
             contact, contact_created = Contact.objects.get_or_create(\
             name=form.cleaned_data['name'], email=form.cleaned_data['email'])
@@ -83,11 +87,13 @@ def post_booking(request, album_id):
                 album.save()
                 messages.success(request, 'Booking Done')
             else:
-                message.error(request, 'Already Booked :/')
-            return HttpResponseRedirect(reverse('store:show_album',\
-            args=[album_id]))
+                messages.error(request, 'Already Booked :/')
+        else:
+            messages.error(request, 'Error with your email address !')
+        return HttpResponseRedirect(reverse('store:show_album',\
+        args=[album_id]))
     else:
-        return HttpResponseRedirect(reverse('store:index'))
+        return HttpResponseRedirect(reverse('store:show_album', args=[album_id]))
 
 def show_artist(request, artist_id):
     try:

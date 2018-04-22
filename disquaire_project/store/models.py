@@ -9,6 +9,7 @@ class Artist(models.Model):
     def __str__(self):
         return self.name
 
+
 class Album(models.Model):
     reference = models.IntegerField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -20,12 +21,14 @@ class Album(models.Model):
     def __str__(self):
         return self.title
 
+
 class Contact(models.Model):
     email = models.EmailField(max_length=100)
     name = models.CharField(max_length=200)
 
     def __str__(self):
         return self.name
+
 
 class Booking(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
