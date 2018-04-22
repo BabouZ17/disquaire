@@ -1,12 +1,13 @@
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render
-from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
 
 from .models import Artist, Album, Contact, Booking
-from .forms import BookingForm
+from .forms import BookingForm, ContactForm
 
 # Create your views here.
 def index(request):
@@ -15,6 +16,30 @@ def index(request):
     }
     return render(request, 'store/home.html', {"data": data})
 
+def contact(request):
+    if request.method == 'GET':
+        form = ContactForm()
+        return render(request, 'store/contact.html', {"form": form})
+    elif request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            # Send a mail to the admin
+            success = send_mail(
+                'Query from: ' + form.cleaned_data['first_name'] + ' ' +
+                form.cleaned_data['last_name'] + ' ' +
+                form.cleaned_data['email'],
+                form.cleaned_data['message'],
+                'no-reply@com',
+                [settings.EMAIL_HOST_USER],
+                fail_silently=False,
+            )
+            if success:
+                messages.success(request, 'Mail Sent To The Admin !')
+            else:
+                messages.error(request, 'Failed to deliver the mail !')
+        else:
+            messages.error(request, 'Error in your request ')
+        return HttpResponseRedirect(reverse('store:contact'))
 
 def show_album(request, album_id):
     try:
@@ -34,15 +59,18 @@ def show_albums(request):
 def post_booking(request, album_id):
     if request.method == 'POST':
         form = BookingForm(request.POST)
-        if form.is_valid():
+        album = Album.objects.get(pk=album_id)
+        if form.is_valid() and album.available:
             contact, contact_created = Contact.objects.get_or_create(\
             name=form.cleaned_data['name'], email=form.cleaned_data['email'])
-            album = Album.objects.get(pk=album_id)
-            try:
-                booking, booking_created = Booking.objects.get_or_create(\
-                album=album, contact=contact)
-            except IntegrityError:
-                pass
+            booking = Booking.objects.filter(album=album, contact=contact)
+            if not booking.exists():
+                booking = Booking.objects.create(album=album, contact=contact)
+                album.available = False
+                album.save()
+                messages.success(request, 'Booking Done')
+            else:
+                message.error(request, 'Already Booked :/')
             return HttpResponseRedirect(reverse('store:show_album',\
             args=[album_id]))
     else:

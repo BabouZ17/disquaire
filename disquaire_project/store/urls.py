@@ -12,4 +12,5 @@ urlpatterns = [
     path('artist/<int:artist_id>', views.show_artist, name='show_artist'),
     path('artists/', views.show_artists, name='show_artists'),
     path('search/', views.search, name='search'),
+    path('contact/', views.contact, name='contact'),
 ]

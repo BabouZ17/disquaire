@@ -23,6 +23,7 @@
         {% endif %}
       </div>
     </div>
+  {% if not bookings.exists %}
   <hr />
   <h4>Make a booking:</h4>
   <form action="{% url 'store:post_booking' album.id %}" class="form-inline" method="post">
@@ -30,9 +31,10 @@
     {{ form }}
     <button type="submit" class="btn btn-primary">Confirm Booking</button>
   </form>
+  {% endif %}
   {% if bookings.count != 0 %}
     <hr />
-    <h4>Bookings done already:</h4>
+    <h4>Booking done already:</h4>
     <ul>
       {% for booking in bookings %}
         <li><p>{{ booking.contact.name }} the: {{ booking.created_at }}</p></li>

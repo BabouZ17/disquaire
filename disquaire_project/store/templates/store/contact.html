@@ -1,0 +1,24 @@
+{% extends 'store/base.html' %}
+{% load widget_tweaks %}
+{% block title %}Contact{% endblock %}
+{% block center_content %}
+<div class="address-bar">Contact Us</div>
+{% endblock %}
+{% block extra_content %}
+<div class="container">
+  <div class="box">
+    <div class="col-lg-2 col-md-offset-5">
+      <form action="{% url 'store:contact' %}" class="form-inline" method="post">
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+          <div class="form-group">
+            <label for={{ field.name }}>{{ field.label }}</label>
+            {% render_field field style="border-color: green;border-radius: 5px" placeholder=field.name %}
+          </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-block btn-success">Send your message !</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
