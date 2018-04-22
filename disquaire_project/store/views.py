@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from .models import Artist, Album, Contact, Booking
 from .forms import BookingForm, ContactForm
@@ -53,8 +54,20 @@ def show_album(request, album_id):
     "form": form, "bookings": bookings})
 
 def show_albums(request):
-    albums = Album.objects.all()
-    return render(request, 'store/show_albums.html', {"albums": albums})
+    albums_items = Album.objects.all().order_by('id')
+    paginator = Paginator(albums_items, 5)
+    page = request.GET.get('page')
+    try:
+        albums = paginator.page(page)
+    except PageNotAnInteger:
+        albums = paginator.page(1)
+    except EmptyPage:
+        albums = paginator.page(paginator.num_pages)
+    context = {
+        "albums": albums,
+        "paginate": True
+    }
+    return render(request, 'store/show_albums.html', context)
 
 def post_booking(request, album_id):
     if request.method == 'POST':
@@ -86,8 +99,20 @@ def show_artist(request, artist_id):
 
 
 def show_artists(request):
-    artists = Artist.objects.all()
-    return render(request, 'store/show_artists.html', {"artists": artists})
+    artists_items = Artist.objects.all().order_by('id')
+    paginator = Paginator(artists_items, 5)
+    page = request.GET.get('page')
+    try:
+        artists = paginator.page(page)
+    except PageNotAnInteger:
+        artists = paginator.page(1)
+    except EmptyPage:
+        artists = paginator.page(paginator.num_pages)
+    context = {
+        "artists": artists,
+        "paginate": True
+    }
+    return render(request, 'store/show_artists.html', context)
 
 
 def search(request):
