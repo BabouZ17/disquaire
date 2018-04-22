@@ -1,7 +1,8 @@
 {% extends 'store/base.html' %}
+{% block title %}{{ album.title }}{% endblock %}
 {% block center_content %}
+<div class="container">
   <h1 class="brand-name">{{ album.title }}.</h1>
-  <ul>
     <div class="card" style="width: 200rem;">
       <img class="card-img-top" src={{ album.picture }} alt="Card image cap">
       <div class="card-body">
@@ -22,5 +23,21 @@
         {% endif %}
       </div>
     </div>
-  </ul>
+  <hr />
+  <h4>Make a booking:</h4>
+  <form action="{% url 'store:post_booking' album.id %}" class="form-inline" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit" class="btn btn-primary">Confirm Booking</button>
+  </form>
+  {% if bookings.count != 0 %}
+    <hr />
+    <h4>Bookings done already:</h4>
+    <ul>
+      {% for booking in bookings %}
+        <li><p>{{ booking.contact.name }} the: {{ booking.created_at }}</p></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</div>
 {% endblock %}

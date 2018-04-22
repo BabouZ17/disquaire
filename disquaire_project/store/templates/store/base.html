@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Business Casual - Start Bootstrap Theme</title>
+    <title>{% block title %}{% endblock %}</title>
 
     {% load static %}
 
@@ -64,7 +64,16 @@
                         <a href="{% url 'store:show_albums' %}">Albums</a>
                     </li>
                     <li>
-                        <a href="#">Blog</a>
+                        <a href="#">Contact</a>
+                    </li>
+                    <li>
+                        <a>
+                          <form class="form-inline my-2 my-lg-0" action="{% url 'store:search' %}" method="post">
+                            {% csrf_token %}
+                            <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                          </form>
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -72,6 +81,30 @@
         </div>
         <!-- /.container -->
     </nav>
+
+    {% if messages %}
+    <div class="container">
+      <div class="row">
+        <div class="box">
+          <ul class="messages">
+          {% for message in messages %}
+            <li>
+              {% if message.level == 30 %}
+                <p style="color:orange">{{ message }}</p>
+              {% elif message.level == 25 %}
+                <p style="color:green">{{ message }}</p>
+              {% elif message.level == 40 %}
+                <p style="color:red">{{ message }}</p>
+              {% else %}
+                <p>{{ message }}</p>
+              {% endif %}
+            </li>
+          {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    {% endif %}
 
     {% block carousel_content %}{% endblock %}
 
@@ -84,6 +117,8 @@
 
     </div>
     <!-- /.container -->
+
+    {% block extra_content %}{% endblock %}
 
     <footer>
         <div class="container">

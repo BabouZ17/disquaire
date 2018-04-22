@@ -1,13 +1,31 @@
 {% extends 'store/base.html' %}
+{% block title %}{{ artist.name }}{% endblock %}
 {% block center_content %}
   <h1 class="brand-name">{{ artist.name }}.</h1>
-  <ul>
-    <div class="card" style="width: 200rem;">
-      <img class="card-img-top" src={{ artist.picture }} alt="Card image cap">
-      <div class="card-body">
-        <h5 class="card-title">{{ artist.name }}.</h5>
-        <p class="card-text">{{ artist.bio }}</p>
-      </div>
+  <div class="card" style="width: 200rem;">
+    <img class="card-img-top" src={{ artist.picture }} alt="Card image cap">
+    <div class="card-body">
+      <p class="card-text">{{ artist.bio }}</p>
     </div>
-  </ul>
+  </div>
+{% endblock %}
+
+{% block extra_content %}
+  <div class="container">
+    <div class="box">
+      <h4 class="brand-name-small">Albums :</h4>
+      {% for album in artist.albums.all %}
+        <div class="card" style="width: 50rem;">
+          <p class="card-title">{{ album.title }}</p>
+          <a href="{% url 'store:show_album' album.id %}"/>
+            <img class="card-img-top" src={{ album.picture }} alt="Card image cap">
+          </a>
+          <div class="card-body">
+            <p class="card-text">Added the : {{ album.created_at }}</p>
+          </div>
+        </div>
+        <hr />
+      {% endfor %}
+    </div>
+  </div>
 {% endblock %}

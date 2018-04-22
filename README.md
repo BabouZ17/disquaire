@@ -1,3 +1,3 @@
 # Little Django Project
 
-A cds business application.
+A discs retailer business application.
