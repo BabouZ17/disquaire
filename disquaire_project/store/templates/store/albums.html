@@ -5,14 +5,14 @@
   <ul>
     {% for album in albums %}
       <div class="card" style="width: 200rem;">
-        <a href="{% url 'store:show_album' album.id %}">
+        <a href="{% url 'store:album' album.id %}">
           <img class="card-img-top" src={{ album.picture }} alt="Card image cap">
         </a>
         <div class="card-body">
           <h5 class="card-title">{{ album.title }}</h5>
           {% for artist in album.artists.all %}
             <p class="card-text">{{ artist.name }}</p>
-            <a href="{% url 'store:show_album' album.id %}" class="card-link">More info</a>
+            <a href="{% url 'store:album' album.id %}" class="card-link">More info</a>
           {% endfor %}
         </div>
       </div>
@@ -31,5 +31,5 @@
         {% endif %}
       </ul>
     </nav>
-  {% endif %}  
+  {% endif %}
 {% endblock %}

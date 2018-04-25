@@ -11,7 +11,7 @@
           <p class="card-text">{{ artist.name }}</p>
         {% endfor %}
         <p class="card-text">{{ album.created_at }}</p>
-        {% if album.reference is None %}
+        {% if album.reference == 0 %}
           <p class="card-text">No references.</p>
         {% else %}
           <p class="card-text">{{ album.reference}}.</p>
@@ -23,20 +23,20 @@
         {% endif %}
       </div>
     </div>
-  {% if not bookings.exists %}
+  {% if not booking.exists %}
   <hr />
   <h4>Make a booking:</h4>
-  <form action="{% url 'store:post_booking' album.id %}" class="form-inline" method="post">
+  <form action="{% url 'store:album' album.id %}" class="form-inline" method="post">
     {% csrf_token %}
     {{ form }}
     <button type="submit" class="btn btn-primary">Confirm Booking</button>
   </form>
   {% endif %}
-  {% if bookings.count != 0 %}
+  {% if booking.exists %}
     <hr />
     <h4>Booking done already:</h4>
     <ul>
-      {% for booking in bookings %}
+      {% for booking in booking %}
         <li><p>{{ booking.contact.name }} the: {{ booking.created_at }}</p></li>
       {% endfor %}
     </ul>

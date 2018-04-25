@@ -17,7 +17,7 @@
       {% for album in artist.albums.all %}
         <div class="card" style="width: 50rem;">
           <p class="card-title">{{ album.title }}</p>
-          <a href="{% url 'store:show_album' album.id %}"/>
+          <a href="{% url 'store:album' album.id %}"/>
             <img class="card-img-top" src={{ album.picture }} alt="Card image cap">
           </a>
           <div class="card-body">

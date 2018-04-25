@@ -1,6 +1,6 @@
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from django.core.mail import send_mail
@@ -11,11 +11,11 @@ from .models import Artist, Album, Contact, Booking
 from .forms import BookingForm, ContactForm
 
 # Create your views here.
-def index(request):
-    data = {
+def home(request):
+    context = {
         'artists': Artist.objects.all()
     }
-    return render(request, 'store/home.html', {"data": data})
+    return render(request, 'store/home.html', {"context": context})
 
 def contact(request):
     if request.method == 'GET':
@@ -42,18 +42,7 @@ def contact(request):
             messages.error(request, 'Error in your request ')
         return HttpResponseRedirect(reverse('store:contact'))
 
-def show_album(request, album_id):
-    try:
-        album = Album.objects.get(id=album_id)
-        bookings = Booking.objects.filter(album=Album.objects.get(id=album_id))
-    except Album.DoesNotExist:
-        messages.error(request, 'Album Does Not Exist !')
-        return HttpResponseRedirect(reverse('store:show_albums'))
-    form = BookingForm()
-    return render(request, 'store/show_album.html', {"album": album, \
-    "form": form, "bookings": bookings})
-
-def show_albums(request):
+def albums(request):
     albums_items = Album.objects.all().order_by('id')
     paginator = Paginator(albums_items, 5)
     page = request.GET.get('page')
@@ -67,16 +56,26 @@ def show_albums(request):
         "albums": albums,
         "paginate": True
     }
-    return render(request, 'store/show_albums.html', context)
+    return render(request, 'store/albums.html', context)
 
-def post_booking(request, album_id):
-    if request.method == 'POST':
+def album(request, album_id):
+    if request.method == 'GET':
+        album = get_object_or_404(Album, id=album_id)
+        booking = Booking.objects.filter(album=Album.objects.get(id=album_id))
+        form = BookingForm()
+        context = {
+            "album": album,
+            "booking": booking,
+            "form": form
+        }
+        return render(request, 'store/album.html', context)
+    elif request.method == 'POST':
         form = BookingForm(request.POST)
         try:
             album = Album.objects.get(pk=album_id)
         except Album.DoesNotExist:
             messages.error(request, 'Album does not exists!')
-            return HttpResponseRedirect(reverse('store:show_albums'))
+            return HttpResponseRedirect(reverse('store:albums'))
         if form.is_valid() and album.available:
             contact, contact_created = Contact.objects.get_or_create(\
             name=form.cleaned_data['name'], email=form.cleaned_data['email'])
@@ -90,21 +89,18 @@ def post_booking(request, album_id):
                 messages.error(request, 'Already Booked :/')
         else:
             messages.error(request, 'Error with your email address !')
-        return HttpResponseRedirect(reverse('store:show_album',\
+        return HttpResponseRedirect(reverse('store:album',\
         args=[album_id]))
-    else:
-        return HttpResponseRedirect(reverse('store:show_album', args=[album_id]))
 
-def show_artist(request, artist_id):
-    try:
-        artist = Artist.objects.get(id=artist_id)
-    except Artist.DoesNotExist:
-        messages.error(request, 'Artist Does Not Exist !')
-        return HttpResponseRedirect(reverse('store:show_artists'))
-    return render(request, 'store/show_artist.html', {"artist": artist})
+def artist(request, artist_id):
+    artist = get_object_or_404(Artist, id=artist_id)
+    context = {
+        "artist": artist
+    }
+    return render(request, 'store/artist.html', context)
 
 
-def show_artists(request):
+def artists(request):
     artists_items = Artist.objects.all().order_by('id')
     paginator = Paginator(artists_items, 5)
     page = request.GET.get('page')
@@ -118,7 +114,7 @@ def show_artists(request):
         "artists": artists,
         "paginate": True
     }
-    return render(request, 'store/show_artists.html', context)
+    return render(request, 'store/artists.html', context)
 
 
 def search(request):
@@ -130,15 +126,21 @@ def search(request):
             form = BookingForm()
             result = Album.objects.filter(title__icontains=search)[0]
             bookings = Booking.objects.filter(album=Album.objects.get(id=result.id))
-            return render(request, 'store/show_album.html', \
-            {"album": result, "bookings": bookings, "form": form})
+            context = {
+                "album": result,
+                "bookings": bookings,
+                "form": form
+            }
+            return render(request, 'store/album.html', context)
         # Look for artist
         elif Artist.objects.filter(name__icontains=search).exists():
             result = Artist.objects.filter(name__icontains=search)[0]
-            return render(request, 'store/show_artist.html', \
-            {"artist": result})
+            context = {
+                "artist": result
+            }
+            return render(request, 'store/artist.html', context)
         else:
             messages.warning(request, 'We didn\'t found what you were looking for!')
-            return HttpResponseRedirect(reverse('store:index'))
+            return HttpResponseRedirect(reverse('store:home'))
     else:
-        return HttpResponseRedirect(reverse('store:index'))
+        return HttpResponseRedirect(reverse('store:home'))

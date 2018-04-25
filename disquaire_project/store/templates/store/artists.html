@@ -5,13 +5,13 @@
   <ul>
     {% for artist in artists %}
       <div class="card" style="width: 200rem;">
-        <a href="{% url 'store:show_artist' artist.id %}">
+        <a href="{% url 'store:artist' artist.id %}">
           <img class="card-img-top" src={{ artist.picture }} alt="Card image cap">
         </a>
         <div class="card-body">
           <h5 class="card-title">{{ artist.name }}</h5>
           <p class="card-text">{{ artist.bio }}</p>
-          <link class="card-link" href="{% url 'store:show_artist' artist.id %}">
+          <link class="card-link" href="{% url 'store:artist' artist.id %}">
           More info</link>
         </div>
       </div>

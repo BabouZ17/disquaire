@@ -49,19 +49,19 @@
                     <span class="icon-bar"></span>
                 </button>
                 <!-- navbar-brand is hidden on larger screens, but visible when the menu is collapsed -->
-                <a class="navbar-brand" href="{% url 'store:index' %}">Business Casual</a>
+                <a class="navbar-brand" href="{% url 'store:home' %}">Business Casual</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="{% url 'store:index' %}">Home</a>
+                        <a href="{% url 'store:home' %}">Home</a>
                     </li>
                     <li>
-                        <a href="{% url 'store:show_artists' %}">Artists</a>
+                        <a href="{% url 'store:artists' %}">Artists</a>
                     </li>
                     <li>
-                        <a href="{% url 'store:show_albums' %}">Albums</a>
+                        <a href="{% url 'store:albums' %}">Albums</a>
                     </li>
                     <li>
                         <a href="{% url 'store:contact' %}">Contact</a>

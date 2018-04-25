@@ -4,7 +4,7 @@
 {% include 'store/carousel.html' %}
 {% endblock %}
 {% block center_content %}
-  {% for artist in data.artists.all %}
+  {% for artist in context.artists.all %}
     <h4>{{ artist.name }}</h4>
     <p>Albums :</p>
       <ul>
